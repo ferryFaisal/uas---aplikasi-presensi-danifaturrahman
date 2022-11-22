@@ -91,6 +91,9 @@ function test_input($data)
   if (isset($_SESSION['login']) && ($_SESSION['role'] == 'Admin')) {
     header('location: index.php');
   }
+  if (isset($_SESSION['login']) && ($_SESSION['role'] == 'Dosen')) {
+    header('location: ../index.php');
+  }
   ?>
 
   <div class="header">

@@ -8,6 +8,10 @@ if (isset($_SESSION['login'])) {
   die("Can't Access, please <a href='login.php'>Login here</a>");
 }
 
+if (isset($_SESSION['login']) && ($_SESSION['role'] == 'Dosen')) {
+  die("Can't Access, please <a href='../index.php'>Back here</a>");
+}
+
 $sql2 = "SELECT * FROM users where email = '$_SESSION[login]'";
 $result2 = mysqli_query($conn, $sql2);
 

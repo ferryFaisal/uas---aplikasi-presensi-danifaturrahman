@@ -8,6 +8,10 @@ if (isset($_SESSION['login'])) {
     die("Can't Access, please <a href='login.php'>Login here</a>");
 }
 
+if (isset($_SESSION['login']) && ($_SESSION['role'] == 'Dosen')) {
+    die("Can't Access, please <a href='../index.php'>Back here</a>");
+}
+
 $sql2 = "SELECT * FROM users where email = '$_SESSION[login]'";
 $result2 = mysqli_query($conn, $sql2);
 
@@ -151,6 +155,7 @@ if ($result->num_rows > 0) {
                                             <th>NIM</th>
                                             <th>Nama</th>
                                             <th>Kelas</th>
+                                            <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tfoot>
@@ -158,6 +163,7 @@ if ($result->num_rows > 0) {
                                             <th>NIM</th>
                                             <th>Nama</th>
                                             <th>Kelas</th>
+                                            <th>Action</th>
                                         </tr>
                                     </tfoot>
                                     <tbody>
@@ -166,6 +172,9 @@ if ($result->num_rows > 0) {
                                                 <td><?= $row["nim"] ?></td>
                                                 <td><?= $row["nama"] ?></td>
                                                 <td><?= $row["kelas"] ?></td>
+                                                <td style="text-align: center"><a href='updatedata_mahasiswa.php?nim=<?= $row['nim'] ?>'><i class="fa-solid fa-pen-to-square"></i></a> |
+                                                    <a onclick="return confirm ('Want to Delete ?') " href='deletedata_mahasiswa.php?nim=<?= $row['nim'] ?>'><i class="fa-solid fa-trash"></i></a>
+                                                </td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>

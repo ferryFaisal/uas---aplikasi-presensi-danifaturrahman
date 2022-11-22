@@ -81,6 +81,10 @@ if ($result->num_rows > 0) { ?>
                     <?php } ?>
                 </div>
                 <div class="card-body">
+                    <?php
+                    if (isset($_SESSION['login']) && ($_SESSION['role'] == 'Admin')) { ?>
+                        <a href="admin/index.php" class="btn btn-primary mb-3">Admin Panel</a>
+                    <?php } ?>
                     <form method="POST" action="">
                         <!-- <div class="form-group"> -->
                         <div class="row form-row mb-1">

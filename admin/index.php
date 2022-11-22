@@ -13,6 +13,9 @@ if (isset($_SESSION['login']) && ($_SESSION['role'] == 'Dosen')) {
 
 $sql = "SELECT * FROM users where email = '$_SESSION[login]'";
 $result = mysqli_query($conn, $sql);
+
+$sql2 = "SELECT * FROM presensi order by id DESC";
+$result2 = mysqli_query($conn, $sql2);
 if (mysqli_num_rows($result) > 0) {
 
 ?>
@@ -141,6 +144,26 @@ if (mysqli_num_rows($result) > 0) {
             <?php
             if ($_SESSION['role'] == "Admin") {
             ?>
+
+              <!-- Card Go To Presensi -->
+              <div class="col-xl-3 col-sm-6 mb-3">
+                <div class="card text-white bg-warning o-hidden h-100">
+                  <div class="card-body">
+                    <div class="card-body-icon">
+                      <i class="fas fa-fw fa-list"></i>
+                    </div>
+                    <div class="mr-5">Form Presensi</div>
+                  </div>
+
+                  <a class="card-footer text-white clearfix small z-1" href="../index.php">
+                    <span class="float-left">Click here</span>
+                    <span class="float-right">
+                      <i class="fas fa-angle-right"></i>
+                    </span>
+                  </a>
+                </div>
+              </div>
+
               <!-- Card Mahasiswa -->
               <div class="col-xl-3 col-sm-6 mb-3">
                 <div class="card text-white bg-warning o-hidden h-100">
@@ -200,81 +223,115 @@ if (mysqli_num_rows($result) > 0) {
             ?>
           </div>
 
-          <!-- Area Chart Example-->
-          <div class="card mb-3">
-            <div class="card-header">
-              <i class="fas fa-chart-area"></i>
-              Area Chart Example
+          <div class="card-header">
+            <i class="fas fa-table"></i>
+            Users Table - Recent
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Mata Kuliah</th>
+                    <th>Kelas</th>
+                    <th>NIM</th>
+                    <th>Nama</th>
+                    <th>Status Presensi</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tfoot>
+                  <tr>
+                    <th>Tanggal</th>
+                    <th>Mata Kuliah</th>
+                    <th>Kelas</th>
+                    <th>NIM</th>
+                    <th>Nama</th>
+                    <th>Status Presensi</th>
+                    <th>Action</th>
+                  </tr>
+                </tfoot>
+                <tbody>
+                  <?php while ($row = mysqli_fetch_assoc($result2)) { ?>
+                    <tr>
+                      <td><?= $row["tgl_presensi"] ?></td>
+                      <td><?= $row["makul"] ?></td>
+                      <td><?= $row["kelas"] ?></td>
+                      <td><?= $row["nim"] ?></td>
+                      <td><?= $row["nama"] ?></td>
+                      <td><?= $row["status_presensi"] ?></td>
+                      <td style="text-align: center"><a href='updatedata_presensi.php?id=<?= $row['id'] ?>'><i class="fa-solid fa-pen-to-square"></i></a> |
+                        <a onclick="return confirm ('Want to Delete ?') " href='deletedata_presensi.php?id=<?= $row['id'] ?>'><i class="fa-solid fa-trash"></i></a>
+                      </td>
+                    </tr>
+                  <?php } ?>
+                </tbody>
+              </table>
             </div>
-            <div class="card-body">
-              <canvas id="myAreaChart" width="100%" height="30"></canvas>
+          </div>
+
+
+
+          <!-- Sticky Footer -->
+          <footer class="sticky-footer">
+            <div class="container my-auto">
+              <div class="copyright text-center my-auto">
+                <span>Copyright © Your Website 2019</span>
+              </div>
             </div>
-            <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
+          </footer>
+        </div>
+        <!-- /.content-wrapper -->
+      </div>
+      <!-- /#wrapper -->
+
+      <!-- Scroll to Top Button-->
+      <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+      </a>
+
+      <!-- Logout Modal-->
+      <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+              <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Select "Logout" below if you are ready to end your current session.
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-secondary" type="button" data-dismiss="modal">
+                Cancel
+              </button>
+              <a class="btn btn-primary" href="logout.php">Logout</a>
+            </div>
           </div>
         </div>
-        <!-- /.container-fluid -->
-
-
-
-        <!-- Sticky Footer -->
-        <footer class="sticky-footer">
-          <div class="container my-auto">
-            <div class="copyright text-center my-auto">
-              <span>Copyright © Your Website 2019</span>
-            </div>
-          </div>
-        </footer>
       </div>
-      <!-- /.content-wrapper -->
-    </div>
-    <!-- /#wrapper -->
 
-    <!-- Scroll to Top Button-->
-    <a class="scroll-to-top rounded" href="#page-top">
-      <i class="fas fa-angle-up"></i>
-    </a>
+      <!-- Bootstrap core JavaScript-->
+      <script src="vendor/jquery/jquery.min.js"></script>
+      <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            Select "Logout" below if you are ready to end your current session.
-          </div>
-          <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-dismiss="modal">
-              Cancel
-            </button>
-            <a class="btn btn-primary" href="logout.php">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
+      <!-- Core plugin JavaScript-->
+      <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
 
-    <!-- Bootstrap core JavaScript-->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+      <!-- Page level plugin JavaScript-->
+      <script src="vendor/chart.js/Chart.min.js"></script>
+      <script src="vendor/datatables/jquery.dataTables.js"></script>
+      <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
 
-    <!-- Core plugin JavaScript-->
-    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+      <!-- Custom scripts for all pages-->
+      <script src="js/sb-admin.min.js"></script>
 
-    <!-- Page level plugin JavaScript-->
-    <script src="vendor/chart.js/Chart.min.js"></script>
-    <script src="vendor/datatables/jquery.dataTables.js"></script>
-    <script src="vendor/datatables/dataTables.bootstrap4.js"></script>
-
-    <!-- Custom scripts for all pages-->
-    <script src="js/sb-admin.min.js"></script>
-
-    <!-- Demo scripts for this page-->
-    <script src="js/demo/datatables-demo.js"></script>
-    <script src="js/demo/chart-area-demo.js"></script>
+      <!-- Demo scripts for this page-->
+      <script src="js/demo/datatables-demo.js"></script>
+      <script src="js/demo/chart-area-demo.js"></script>
   </body>
 
   </html>
