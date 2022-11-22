@@ -1,8 +1,9 @@
 <?php
+ob_start();
 require 'connect_db.php';
 session_start();
 
-$sql = "SELECT * FROM mahasiswa";
+$sql = "SELECT * FROM mahasiswa where kelas = '5A'";
 $result = mysqli_query($conn, $sql);
 
 if (isset($_SESSION['login'])) {
@@ -12,6 +13,35 @@ if (isset($_SESSION['login'])) {
 
 $sql2 = "SELECT * FROM users where email = '$_SESSION[login]'";
 $result2 = mysqli_query($conn, $sql2);
+
+$tglErr = $makulErr = "";
+$valid_tgl = $valid_makul = false;
+$message = "";
+
+if (isset($_POST['submit'])) {
+  if (empty($_POST['tgl'])) {
+    $valid_tgl = false;
+    $tglErr = "*required field";
+  } else {
+    $valid_tgl = true;
+  }
+
+  if (empty($_POST['makul'])) {
+    $valid_makul = false;
+    $makulErr = "*required field";
+  } else {
+    $valid_makul = true;
+  }
+}
+
+if (isset($_GET["success"])) {
+  $message = '
+  <div class="alert alert-success alert-dismissible">
+    <a href="index.php" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    Presensi selesai
+  </div>
+  ';
+}
 
 if ($result->num_rows > 0) { ?>
 
@@ -23,6 +53,12 @@ if ($result->num_rows > 0) { ?>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Input | Presensi Mahasiswa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
+    <style>
+      .error {
+        color: red;
+      }
+    </style>
   </head>
 
   <body class="bg-dark">
@@ -33,6 +69,7 @@ if ($result->num_rows > 0) { ?>
       <div class="card card-register mx-auto mt-5">
         <div class="card-header text-center">
           <h4>Pengisian Kehadiran Mahasiswa</h4>
+          <span><?= $message ?></span>
           <?php
           if (isset($_SESSION['login'])) {
             while ($row = mysqli_fetch_assoc($result2)) { ?>
@@ -44,12 +81,13 @@ if ($result->num_rows > 0) { ?>
           <?php } ?>
         </div>
         <div class="card-body">
-          <form method="POST" action="presensi_action.php">
+          <form method="POST" action="">
             <!-- <div class="form-group"> -->
             <div class="row form-row mb-1">
               <div class="col-md-4">
                 <div class="form-label-group">
                   <input type="date" id="tgl" name="tgl" class="form-control" placeholder="Tgl" autofocus="autofocus" value="">
+                  <span class="error"><?= $tglErr ?></span>
                 </div>
               </div>
               <div class="col-md-4">
@@ -60,18 +98,20 @@ if ($result->num_rows > 0) { ?>
                     <option value="WebProgLab"> Praktik Pemrograman Web </option>
                     <option value="SoftDev"> Rekayasa Perangkat Lunak </option>
                   </select>
+                  <span class="error"><?= $makulErr ?></span>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="form-label-group">
-                  <select name="kelas" id="kelas" class="form-control" autofocus="autofocus">
-                    <option value=""> -- Pilih Kelas -- </option>
-                    <option value="5A"> 5A </option>
-                    <option value="5B"> 5B </option>
-                  </select>
+                  <span>Pilih kelas: &nbsp; </span>
+                  <a href="index.php" class="btn btn-success">Kelas 5A</a>
+                  <a href="indexB.php" class="btn btn-primary">kelas 5B</a>
+                  <input type="hidden" name="kelas" value="5A">
                 </div>
               </div>
             </div>
+            <div class="col12 fs-5" align="center" style="font-weight: bold;">
+              - KELAS 5A -</div>
             <hr>
             <div class="row text-center">
               <div class="col-md-4"><strong>Nomor Induk Mahasiswa</strong></div>
@@ -95,7 +135,6 @@ if ($result->num_rows > 0) { ?>
                 <div class="col-md-4">
                   <div class="form-label-group">
                     <select name="presensi[]" id="presensi" class="form-control" autofocus="autofocus">
-                      <option value=""> -- Pilih Status -- </option>
                       <option value="Hadir"> Hadir </option>
                       <option value="Sakit"> Sakit </option>
                       <option value="Izin"> Izin </option>
@@ -117,6 +156,12 @@ if ($result->num_rows > 0) { ?>
           </div>
         </div>
       </div>
+
+      <?php
+      if ($valid_makul && $valid_tgl == true) {
+        include 'presensi_action.php';
+      }
+      ?>
 
   </body>
 

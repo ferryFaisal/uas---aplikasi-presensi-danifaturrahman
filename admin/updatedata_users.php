@@ -144,8 +144,7 @@ function test_input($data)
                                 <select name='role' class="form-select">
                                     <option value=""> -Select a role- </option>
                                     <option value="Admin" <?= $attrAdmin ?>>Admin</option>
-                                    <option value="Sales" <?= $attrSales ?>>Sales</option>
-                                    <option value="Finance" <?= $attrFinance ?>>Finance</option>
+                                    <option value="Dosen" <?= $attrDosen ?>>Dosen</option>
                                 </select>
                                 <span class="error"><?php echo $roleErr; ?></span>
                             </div>

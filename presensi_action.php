@@ -1,6 +1,5 @@
 <?php
 require 'connect_db.php';
-session_start();
 
 $makul = $_POST['makul'];
 $kelas = $_POST['kelas'];
@@ -18,3 +17,6 @@ for ($i = 0; $i < $count; $i++) {
 $sql = rtrim($sql, ",");
 
 $insert = $conn->query($sql);
+
+header('location: index.php?success=1');
+ob_end_flush();
