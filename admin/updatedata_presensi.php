@@ -43,7 +43,26 @@ if (isset($_GET["success"])) {
   ';
 }
 
-if ($result->num_rows > 0) { ?>
+if ($result->num_rows > 0) {
+
+    $attrWebProg = $attrProgLab = $attrSoftDev = "";
+    while ($row = mysqli_fetch_assoc($result)) {
+
+        switch ($row['makul']) {
+            case 'WebProg':
+                $attrWebProg = "selected";
+                break;
+            case 'ProgLab':
+                $attrProgLab = "selected";
+                break;
+            case 'SoftDev':
+                $attrSoftDev = "selected";
+                break;
+        }
+        $nnim = $row['nim'];
+        $nnama = $row['nama'];
+    }
+?>
 
     <!doctype html>
     <html lang="en">
@@ -74,7 +93,6 @@ if ($result->num_rows > 0) { ?>
                     if (isset($_SESSION['login'])) {
                         while ($row = mysqli_fetch_assoc($result2)) { ?>
                             User: <?= $row['name']; ?><br>
-                            <a href="admin/logout.php">Logout</a>
                         <?php  }
                     } else { ?>
                         <a href="admin/login.php">Login</a><br>
@@ -86,32 +104,16 @@ if ($result->num_rows > 0) { ?>
                         <div class="row form-row mb-1">
                             <div class="col-md-4">
                                 <div class="form-label-group">
-                                    <input type="date" id="tgl" name="tgl" class="form-control" placeholder="Tgl" autofocus="autofocus" value="">
-                                    <span class="error"><?= $tglErr ?></span>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-label-group">
                                     <select name="makul" id="makul" class="form-control" autofocus="autofocus">
                                         <option value=""> -- Pilih Mata Kuliah -- </option>
-                                        <option value="WebProg"> Pemrograman Web </option>
-                                        <option value="WebProgLab"> Praktik Pemrograman Web </option>
-                                        <option value="SoftDev"> Rekayasa Perangkat Lunak </option>
+                                        <option value="WebProg" <?= $attrWebProg ?>> Pemrograman Web </option>
+                                        <option value="WebProgLab" <?= $attrProgLab ?>> Praktik Pemrograman Web </option>
+                                        <option value="SoftDev" <?= $attrSoftDev ?>> Rekayasa Perangkat Lunak </option>
                                     </select>
                                     <span class="error"><?= $makulErr ?></span>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-label-group">
-                                    <span>Pilih kelas: &nbsp; </span>
-                                    <a href="index.php" class="btn btn-success">Kelas 5A</a>
-                                    <a href="indexB.php" class="btn btn-primary">kelas 5B</a>
-                                    <input type="hidden" name="kelas" value="5A">
-                                </div>
-                            </div>
                         </div>
-                        <div class="col12 fs-5" align="center" style="font-weight: bold;">
-                            - KELAS 5A -</div>
                         <hr>
                         <div class="row text-center">
                             <div class="col-md-4"><strong>Nomor Induk Mahasiswa</strong></div>
@@ -120,30 +122,28 @@ if ($result->num_rows > 0) { ?>
                         </div>
                         <hr>
 
-                        <?php while ($row = mysqli_fetch_assoc($result)) { ?>
-                            <div class="row form-row mb-1">
-                                <div class="col-md-4">
-                                    <div class="form-label-group">
-                                        <input type="text" readonly id="nim" name="nim[]" class="form-control" placeholder="NIM" autofocus="autofocus" value="<?= $row["nim"] ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-label-group">
-                                        <input type="text" readonly id="nama" name="nama[]" class="form-control" placeholder="Nama" autofocus="autofocus" value="<?= $row["nama"] ?>">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-label-group">
-                                        <select name="presensi[]" id="presensi" class="form-control" autofocus="autofocus">
-                                            <option value="Hadir"> Hadir </option>
-                                            <option value="Sakit"> Sakit </option>
-                                            <option value="Izin"> Izin </option>
-                                            <option value="Alpa"> Alpa </option>
-                                        </select>
-                                    </div>
+                        <div class="row form-row mb-1">
+                            <div class="col-md-4">
+                                <div class="form-label-group">
+                                    <input type="text" readonly id="nim" name="nim" class="form-control" placeholder="NIM" autofocus="autofocus" value="<?= $nnim ?>">
                                 </div>
                             </div>
-                        <?php } ?>
+                            <div class="col-md-4">
+                                <div class="form-label-group">
+                                    <input type="text" readonly id="nama" name="nama" class="form-control" placeholder="Nama" autofocus="autofocus" value="<?= $nnama ?>">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-label-group">
+                                    <select name="presensi" id="presensi" class="form-control" autofocus="autofocus">
+                                        <option value="Hadir"> Hadir </option>
+                                        <option value="Sakit"> Sakit </option>
+                                        <option value="Izin"> Izin </option>
+                                        <option value="Alpa"> Alpa </option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                         <br>
 
                         <p class="text-center">
@@ -158,8 +158,8 @@ if ($result->num_rows > 0) { ?>
             </div>
 
             <?php
-            if ($valid_makul && $valid_tgl == true) {
-                include 'presensi_action.php';
+            if ($valid_makul == true) {
+                include 'updatepresensi_action.php';
             }
             ?>
 
